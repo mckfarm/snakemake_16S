@@ -1,0 +1,13 @@
+# where to find the sample sheet - assume we are in the parent folder (not workflow)
+# sample_sheet: "config/sample_sheet.csv"
+
+# rule execution list 
+# this goes into the get_rules function laid out in the common.smk file
+
+import: FALSE
+trim: FALSE
+dada2: FALSE
+merge: FALSE
+taxonomy: FALSE
+tree: FALSE
+metadata: TRUE

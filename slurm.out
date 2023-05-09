@@ -1,0 +1,142 @@
+
+NEW SNAKEMAKE EXECUTION :)
+Job Details
+Job ID: 9960064
+Start Time: Tue May  9 10:16:27 CDT 2023
+Loading conda...
+
+/software/miniconda3/mamba-0.15.3/bin/mamba
+/home/mmf8608/.conda/envs/snakemake/bin/snakemake
+Starting snakemake on cluster...
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cluster nodes: 5
+Job stats:
+job             count    min threads    max threads
+------------  -------  -------------  -------------
+all                 1              1              1
+dada2               1              1              1
+merge_seqs          1              1              1
+merge_tables        1              1              1
+taxonomy            1              1              1
+tree                1              1              1
+total               6              1              1
+
+Select jobs to execute...
+
+[Tue May  9 10:16:47 2023]
+rule dada2:
+    input: qiime_outputs/reads_trimmed.qza
+    output: qiime_outputs/round3/rep_seqs_dada2.qza, qiime_outputs/round3/table_dada2.qza, qiime_outputs/round3/stats_dada2.qza
+    jobid: 1
+    reason: Missing output files: qiime_outputs/round3/table_dada2.qza, qiime_outputs/round3/stats_dada2.qza, qiime_outputs/round3/rep_seqs_dada2.qza
+    resources: mem_mb=20000, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, account=p31629, partition=normal, nodes=1, threads=1, mem=20gb, time=12:00:00
+
+
+        module purge all
+        module load qiime2/2021.11
+
+        qiime dada2 denoise-paired --verbose         --i-demultiplexed-seqs qiime_outputs/reads_trimmed.qza         --p-trunc-len-f 240 --p-trunc-len-r 240         --o-representative-sequences qiime_outputs/round3/rep_seqs_dada2.qza         --o-table qiime_outputs/round3/table_dada2.qza         --o-denoising-stats qiime_outputs/round3/stats_dada2.qza
+        
+        
+Submitted job 1 with external jobid 'Submitted batch job 9960071'.
+[Tue May  9 11:04:10 2023]
+Finished job 1.
+1 of 6 steps (17%) done
+Select jobs to execute...
+
+[Tue May  9 11:04:10 2023]
+rule merge_seqs:
+    input: qiime_outputs/round1/rep_seqs_dada2.qza, qiime_outputs/round2/rep_seqs_dada2.qza, qiime_outputs/round3/rep_seqs_dada2.qza
+    output: qiime_outputs/merged/rep_seqs_dada2.qza
+    jobid: 4
+    reason: Missing output files: qiime_outputs/merged/rep_seqs_dada2.qza; Input files updated by another job: qiime_outputs/round3/rep_seqs_dada2.qza
+    resources: mem_mb=1000, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, account=p31629, partition=normal, nodes=1, threads=1, mem=1gb, time=01:00:00
+
+
+        module purge all
+        module load qiime2/2021.11
+
+        qiime feature-table merge-seqs         --i-data qiime_outputs/round1/rep_seqs_dada2.qza qiime_outputs/round2/rep_seqs_dada2.qza qiime_outputs/round3/rep_seqs_dada2.qza         --o-merged-data qiime_outputs/merged/rep_seqs_dada2.qza
+        
+        
+Submitted job 4 with external jobid 'Submitted batch job 9960744'.
+
+[Tue May  9 11:04:14 2023]
+rule merge_tables:
+    input: qiime_outputs/round1/table_dada2.qza, qiime_outputs/round2/table_dada2.qza, qiime_outputs/round3/table_dada2.qza
+    output: qiime_outputs/merged/table_dada2.qza
+    jobid: 5
+    reason: Missing output files: qiime_outputs/merged/table_dada2.qza; Input files updated by another job: qiime_outputs/round3/table_dada2.qza
+    resources: mem_mb=1000, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, account=p31629, partition=normal, nodes=1, threads=1, mem=1gb, time=01:00:00
+
+
+        module purge all
+        module load qiime2/2021.11
+
+        qiime feature-table merge         --i-tables qiime_outputs/round1/table_dada2.qza qiime_outputs/round2/table_dada2.qza qiime_outputs/round3/table_dada2.qza         --o-merged-table qiime_outputs/merged/table_dada2.qza
+        
+        
+Submitted job 5 with external jobid 'Submitted batch job 9960749'.
+[Tue May  9 11:05:04 2023]
+Finished job 4.
+2 of 6 steps (33%) done
+Select jobs to execute...
+
+[Tue May  9 11:05:04 2023]
+rule tree:
+    input: qiime_outputs/merged/rep_seqs_dada2.qza
+    output: qiime_outputs/merged/aligned_rep_seqs_dada2.qza, qiime_outputs/merged/masked_aligned_rep_seqs_dada2.qza, qiime_outputs/merged/unrooted_tree.qza, qiime_outputs/merged/rooted_tree.qza
+    jobid: 7
+    reason: Missing output files: qiime_outputs/merged/rooted_tree.qza, qiime_outputs/merged/unrooted_tree.qza; Input files updated by another job: qiime_outputs/merged/rep_seqs_dada2.qza
+    resources: mem_mb=20000, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, account=p31629, partition=normal, nodes=1, threads=1, mem=20gb, time=05:00:00
+
+
+        module purge all
+        module load qiime2/2021.11
+
+        qiime phylogeny align-to-tree-mafft-fasttree         --i-sequences qiime_outputs/merged/rep_seqs_dada2.qza         --o-alignment qiime_outputs/merged/aligned_rep_seqs_dada2.qza         --o-masked-alignment qiime_outputs/merged/masked_aligned_rep_seqs_dada2.qza         --o-tree qiime_outputs/merged/unrooted_tree.qza --o-rooted-tree qiime_outputs/merged/rooted_tree.qza
+        
+Submitted job 7 with external jobid 'Submitted batch job 9960798'.
+
+[Tue May  9 11:05:07 2023]
+rule taxonomy:
+    input: qiime_outputs/merged/rep_seqs_dada2.qza
+    output: qiime_outputs/merged/taxonomy.qza
+    jobid: 6
+    reason: Missing output files: qiime_outputs/merged/taxonomy.qza; Input files updated by another job: qiime_outputs/merged/rep_seqs_dada2.qza
+    resources: mem_mb=10000, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, account=p31629, partition=normal, nodes=1, threads=1, mem=10gb, time=24:00:00
+
+
+        module purge all
+        module load qiime2/2021.11
+
+        qiime feature-classifier classify-sklearn         --i-classifier /projects/p31629/midas_4.8.1_classifier.qza         --i-reads qiime_outputs/merged/rep_seqs_dada2.qza         --o-classification qiime_outputs/merged/taxonomy.qza
+        
+Submitted job 6 with external jobid 'Submitted batch job 9960801'.
+[Tue May  9 11:05:10 2023]
+Finished job 5.
+3 of 6 steps (50%) done
+[Tue May  9 11:10:02 2023]
+Finished job 7.
+4 of 6 steps (67%) done
+[Tue May  9 11:28:24 2023]
+Finished job 6.
+5 of 6 steps (83%) done
+Select jobs to execute...
+
+[Tue May  9 11:28:24 2023]
+localrule all:
+    input: qiime_outputs/round3/rep_seqs_dada2.qza, qiime_outputs/round3/table_dada2.qza, qiime_outputs/round3/stats_dada2.qza, qiime_outputs/merged/rep_seqs_dada2.qza, qiime_outputs/merged/table_dada2.qza, qiime_outputs/merged/taxonomy.qza, qiime_outputs/merged/unrooted_tree.qza, qiime_outputs/merged/rooted_tree.qza
+    jobid: 0
+    reason: Input files updated by another job: qiime_outputs/round3/stats_dada2.qza, qiime_outputs/merged/unrooted_tree.qza, qiime_outputs/merged/rep_seqs_dada2.qza, qiime_outputs/merged/taxonomy.qza, qiime_outputs/round3/rep_seqs_dada2.qza, qiime_outputs/merged/rooted_tree.qza, qiime_outputs/round3/table_dada2.qza, qiime_outputs/merged/table_dada2.qza
+    resources: mem_mb=1000, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=/tmp, account=p31629, partition=normal, nodes=1, threads=1, mem=1gb, time=01:00:00
+
+[Tue May  9 11:28:24 2023]
+Finished job 0.
+6 of 6 steps (100%) done
+Complete log: .snakemake/log/2023-05-09T101635.664558.snakemake.log
+
+ENDING SNAKEMAKE EXECUTION
+Bye-bye :)
+

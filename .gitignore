@@ -1,0 +1,7 @@
+# big files
+/raw_reads
+/.snakemake
+/logs
+/qiime_outputs
+
+*.qza
